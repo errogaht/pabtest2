@@ -1,8 +1,12 @@
-<?php 
+<?php
+use errogaht\PABTest2\PABTest2;
 
 require_once("lib/lib.php");
 require_once("lib/db.php");
 require_once("lib/templates.php");
+
+require_once "pabtest2/pabtest2.php";
+$formTest = new PABTest2('formTest', ['1' => 50, '2' => 50]);
 
 define('_city','msk');
 $_ip = $_SERVER['REMOTE_ADDR'];
@@ -34,6 +38,7 @@ if($_POST['agreed']) {
     $q.=", addt=NOW(), ip='$_ip', city_id='"._city."'";  $errf="";
     mysql_query("INSERT INTO ri_pregs SET $q");  $id=mysql_insert_id();  if(!$id)dierr("#u8742765123");
     setcookie("sc_gid", "$id", 0, "/");
+    PABTest2::reachGoal('formTest');
     header("Location: $_self?ok"); exit();
   }
   else {
@@ -62,10 +67,12 @@ if($_SERVER['QUERY_STRING']=="ok") {
 elseif($_GET['f']) {
   $f=intval($_GET['f']);  $sf0="";  $sf1="";
   if($f==1) {
-    $sf0="<div style='font:italic 11px arial; padding:0 0 8px 0; text-align:right;'>Также вы можете <a href='?f=2' class=decor>заполнить резюме в свободном формате</a>.</div>";
+    if ($formTest->getVariant() != 1) {
+      $sf0="<div style='font:italic 11px arial; padding:0 0 8px 0; text-align:right;'>Также вы можете <a href='?f=2' class=decor>заполнить резюме в свободном формате</a>.</div>";
+    }
     foreach($xs as $n=>$v) { $sf1.="<tr><td class=iltd1>$v</td><td><textarea class=inp05 name=$n>".$$n."</textarea></td></tr>"; }
   }
-  elseif($f==2) {
+  elseif($f==2 && $formTest->getVariant() != 2) {
     $sf0="<div style='font:italic 11px arial; padding:0 0 8px 0; text-align:right;'>Также вы можете <a href='?f=1' class=decor>заполнить подробную форму резюме</a>.</div>";
     $sf1="
       <tr><td colspan=2>Специальность, квалификация, условия, другая информация (или ссылка на полное резюме):</td>
@@ -101,7 +108,7 @@ elseif($_GET['f']) {
 else {
   $PAGE->main.="
     <br><p style='font:normal 14px arial'>Первичная регистрация (до собеседования) занимает в среднем 10—15 минут.</p>
-    <form action='?f=1' method=POST style='padding:0 0 0 4px;' onsubmit='this.sbmt.disabled=true;'>
+    <form action='?f=".$formTest->getVariant()."' method=POST style='padding:0 0 0 4px;' onsubmit='this.sbmt.disabled=true;'>
     <input type=submit name=sbmt value='Зарегистрироваться' id=rg_sbmt1 style='border:outset 1px #ddd; padding:4px 8px; background-color:#f0f0f0; font:bold 13px verdana,arial,sans-serif; color:#333;'>
     </form>
   ";

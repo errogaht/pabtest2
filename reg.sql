@@ -1,5 +1,3 @@
-
-
 CREATE TABLE `ri_pregs` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `city_id` varchar(16) DEFAULT NULL,
@@ -38,5 +36,5 @@ CREATE TABLE `ri_pregs` (
   `prr` varchar(32) NOT NULL,
   `clb` tinyint(4) NOT NULL,
   `site_id` smallint(5) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-) ENGINE=InnoDB AUTO_INCREMENT=584267 DEFAULT CHARSET=cp1251 ROW_FORMAT=COMPACT
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=584267 DEFAULT CHARSET=cp1251 ROW_FORMAT=COMPACT;
